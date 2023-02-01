@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FF6200EE</color>
+    <color name="cardbackground">#f0f8ff</color>
+    <color name="colorPrimaryDark">#FF3700B3</color>
+    <color name="colorAccent">#ED5CFD</color>
+    <color name="headlines">#000000</color>
+    <color name="background_button">#00cc44</color>
+    <color name="dollar">#ff0000</color>
+    <color name="link">#20A8E7</color>
+    <color name="buypage">#ffffff</color>
+    <color name="darkColorPrimary">#1e2756</color>
+    <color name="darkColorPrimaryDark">#141831</color>
+    <color name="darkColorAccent">#2aac4b</color>
+    <color name="cardselected">#e6e6e6</color>
+    <color name="cardunselected">#E6F3FF</color>
+    <!-- Custom Color -->
+    <color name="light_white">#D2D2D2</color>
+    <color name="card_1">#D8E4A3</color>
+    <color name="card_2">#BEF99F</color>
+    <color name="card_3">#BDCBE2</color>
+    <color name="card_4">#D8C3D0</color>
+
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+</resources>
