@@ -1,21 +1,31 @@
 package com.example.TimeLess;
 
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.Manifest;
+import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.util.Base64;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -24,53 +34,104 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
-
 
 public class AddProductforSale extends AppCompatActivity {
 
-    private EditText name, price, short_description, long_description;
-
-    private ImageView photo_taken;
-    private Button take_picture;
+    private EditText name, price, long_description;
+    private AutoCompleteTextView brandtext;
+    private ImageView photo_taken, micButton;
+    private Button take_picture, RL, RR;
     private FirebaseDatabase database;
 
-    private String username;
+    private String username = "";
     private String file_in_string;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int GALLERY = 0;
+    private SpeechRecognizer speechRecognizer;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_productfor_sale);
-
-        Bundle extras = getIntent().getExtras();
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+            checkPermission();
+        }
+        /*Bundle extras = getIntent().getExtras();
         if(extras!=null){
             this.username = extras.getString("username");
-        }
+        }*/
+        
+
+        SharedPreferences prefs = getSharedPreferences("TimeLess", MODE_PRIVATE);
+        username = prefs.getString("username", "UNKNOWN");
+        //for testing
+        Toast.makeText(this, "username:" + username, Toast.LENGTH_LONG).show();
 
         name = (EditText) findViewById(R.id.name_of_product_entry);
         price = (EditText) findViewById(R.id.price_entry);
-        short_description = (EditText) findViewById(R.id.shortdes_entry);
+        brandtext = (AutoCompleteTextView) findViewById(R.id.brandinput);
         long_description = (EditText) findViewById(R.id.longdes_entry);
 
+        micButton = (ImageView) findViewById(R.id.STTbutton);
+
+        RL = (Button) findViewById(R.id.RotateL);
+        RL.setVisibility(View.INVISIBLE);
+        RR = (Button) findViewById(R.id.RotateR);
+        RR.setVisibility(View.INVISIBLE);
         photo_taken = (ImageView) findViewById(R.id.taken_pic);
-        take_picture= (Button)findViewById(R.id.TakePicture);
+        take_picture = (Button) findViewById(R.id.TakePicture);
         take_picture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 dispatchTakePictureIntent();
+                RL.setVisibility(View.VISIBLE);
+                RR.setVisibility(View.VISIBLE);
             }
         });
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+        
+        String[] brands = getResources().getStringArray(R.array.watchbrands);
+        ArrayAdapter brandAdapter = new ArrayAdapter(getApplicationContext(), R.layout.dropdown_item, brands);
+        brandtext.setAdapter(brandAdapter);
+        brandtext.setThreshold(0);
         database = FirebaseDatabase.getInstance();
     }
 
+    private void checkPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+        }
+    }
+
+    @Override
+    public void onResults(Bundle bundle) {
+        micButton.setImageResource(R.drawable.ic_mic);
+        ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+        long_description.setText(data.get(0));
+    }
+
+    @Override
+    public void onBeginningOfSpeech() {
+        long_description.setText("Listening...");
+    }
+
     private void dispatchTakePictureIntent() {
-        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
+                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        if (galleryIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(galleryIntent, GALLERY);
+        }
+        /*AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
         String[] pictureDialogItems = {
                 "Capture photo from camera",
@@ -98,11 +159,11 @@ public class AddProductforSale extends AppCompatActivity {
                         }
                     }
                 });
-        pictureDialog.show();
+        pictureDialog.show();*/
     }
 
-    public void takepicture(View view){
-      //Take or choose picture from here
+    public void takepicture(View view) {
+        //Take or choose picture from here
         dispatchTakePictureIntent();
     }
 
@@ -119,8 +180,14 @@ public class AddProductforSale extends AppCompatActivity {
             Uri contentURI = data.getData();
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), contentURI);
+                try {
+                    bitmap = rotateImageIfRequired(bitmap, data.getData());
+                    Toast.makeText(AddProductforSale.this, "Image rotated and saved!", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(AddProductforSale.this, "Image Saved, no rotation needed!", Toast.LENGTH_SHORT).show();
+                }
                 this.file_in_string = BitMapToString(bitmap);
-                Toast.makeText(AddProductforSale.this, "Image Saved!", Toast.LENGTH_SHORT).show();
                 //get the path of the image
                 photo_taken.setImageBitmap(bitmap);
             } catch (IOException e) {
@@ -129,34 +196,65 @@ public class AddProductforSale extends AppCompatActivity {
             }
         }
     }
-    public String BitMapToString(Bitmap bit){
+
+    public String BitMapToString(Bitmap bit) {
         //Reduce the size to 200x200
-        Bitmap bitmap = Bitmap.createScaledBitmap(bit,200,200, false);
-        ByteArrayOutputStream baos=new  ByteArrayOutputStream();
+        Bitmap bitmap = Bitmap.createScaledBitmap(bit, 200, 200, false);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
         //Compress the bitmap
-        bitmap.compress(Bitmap.CompressFormat.PNG,50, baos);
-        byte [] b=baos.toByteArray();
-        String temp= Base64.encodeToString(b, Base64.DEFAULT);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, baos);
+        byte[] b = baos.toByteArray();
+        String temp = Base64.encodeToString(b, Base64.DEFAULT);
         return temp;
     }
 
-    public void cancelclick(View view){
+    public void clearclick(View view) {
         //Reset everything
         name.setText("");
         price.setText("");
-        short_description.setText("");
+        brandtext.setText("");
         long_description.setText("");
         photo_taken.setImageDrawable(null);
-
     }
 
-    public void submitclick(View view){
+    public void returnclick(View view) {
+        finish();
+    }
+
+    public void rotlclick(View view) {
+        Bitmap img = StringToBitMap(file_in_string);
+        img = rotateImage(img, 270);
+        photo_taken.setImageBitmap(img);
+        file_in_string = BitMapToString(img);
+        Toast.makeText(AddProductforSale.this, "Image has been rotated", Toast.LENGTH_SHORT).show();
+    }
+
+    public void rotrclick(View view) {
+        Bitmap img = StringToBitMap(file_in_string);
+        img = rotateImage(img, 90);
+        photo_taken.setImageBitmap(img);
+        file_in_string = BitMapToString(img);
+        Toast.makeText(AddProductforSale.this, "Image has been rotated", Toast.LENGTH_SHORT).show();
+    }
+
+    public Bitmap StringToBitMap(String encodedString) {
+        try {
+            byte[] encodeByte = Base64.decode(encodedString, Base64.DEFAULT);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch (Exception e) {
+            e.getMessage();
+            return null;
+        }
+    }
+
+    public void submitclick(View view) {
         String title_of_item = name.getText().toString();
         String price_of_item = price.getText().toString();
-        String short_description_of_iem = short_description.getText().toString();
+        String short_description_of_iem = brandtext.getText().toString();
         String long_description_of_iem = long_description.getText().toString();
 
-        Product product = new Product(this.username,title_of_item,price_of_item,short_description_of_iem,long_description_of_iem,this.file_in_string);
+        Product product = new Product(this.username, title_of_item, price_of_item, short_description_of_iem, long_description_of_iem, this.file_in_string);
         DatabaseReference product_database = database.getReference("products");
 
         //Creating a key by the database should use persons key instead
@@ -165,12 +263,13 @@ public class AddProductforSale extends AppCompatActivity {
 
         //Set one copy of item in products database
         Map<String, Object> database_entry = new HashMap<String, Object>();
-        database_entry.put("id",userid);
-        database_entry.put("title",title_of_item);
-        database_entry.put("price",price_of_item);
+        database_entry.put("username", username);
+        database_entry.put("id", userid);
+        database_entry.put("title", title_of_item);
+        database_entry.put("price", price_of_item);
         database_entry.put("short", short_description_of_iem);
-        database_entry.put("long",long_description_of_iem);
-        database_entry.put("image",this.file_in_string);
+        database_entry.put("long", long_description_of_iem);
+        database_entry.put("image", this.file_in_string);
         product_database.child(userid).setValue(database_entry);
 
         //Set the id of product in user's database too
@@ -184,4 +283,31 @@ public class AddProductforSale extends AppCompatActivity {
         Intent intent = new Intent(view.getContext(), Slidermenu.class);
         view.getContext().startActivity(intent);
     }
+
+    private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
+
+        ExifInterface ei = new ExifInterface(selectedImage.getPath());
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotateImage(img, 90);
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotateImage(img, 180);
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotateImage(img, 270);
+            default:
+                return img;
+        }
+    }
+
+    private Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        img.recycle();
+        return rotatedImg;
+    }
+
+
 }

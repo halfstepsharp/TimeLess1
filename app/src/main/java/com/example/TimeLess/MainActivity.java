@@ -1,8 +1,10 @@
 package com.example.TimeLess;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +19,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,8 +49,12 @@ public class MainActivity extends AppCompatActivity {
         login_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                authenticate_user(Email.getText().toString(),Password.getText().toString());
-                startActivity(new Intent(getApplicationContext(), Slidermenu.class));
+                String uEmail = Email.getText().toString();
+                String uPword = Password.getText().toString();
+                if (validate_emailpassword(uEmail, uPword) == true) {
+                    authenticate_user(Email.getText().toString(), Password.getText().toString());
+                    //startActivity(new Intent(getApplicationContext(), Slidermenu.class));
+                }
             }
         });
 
@@ -74,6 +85,22 @@ public class MainActivity extends AppCompatActivity {
         updateUI(current_user);
     }
 
+    private boolean validate_emailpassword(String uEmail, String uPword) {
+        int count =0;
+        if (!Patterns.EMAIL_ADDRESS.matcher(uEmail).matches()) {
+            Email.setError("Please provide valid email!");
+        } else {
+            count +=1;
+        }
+        if(uPword.length()>5 || !(uPword.isEmpty())){
+            count+=1;
+        } else {
+            Password.setError("password must be at least 6 characters long");
+        }
+        if(count==2) return true;
+        else return false;
+    }
+
     private void authenticate_user (String email, String password){
         //Needs to query database here for password and username
 
@@ -82,6 +109,28 @@ public class MainActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()){
                     FirebaseUser user = mAuth.getCurrentUser();
+                    FirebaseDatabase database = FirebaseDatabase.getInstance();
+                    DatabaseReference usersDatabase = database.getReference("users");
+                    usersDatabase.child(user.getUid()).addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            if (dataSnapshot.exists()) {
+                                String username = dataSnapshot.child("username").getValue().toString();
+                                // Do something with the username
+                                SharedPreferences prefs = getSharedPreferences("TimeLess", MODE_PRIVATE);
+                                prefs.edit().putString("username", username).commit();
+                                Toast.makeText(getApplicationContext(), "username: "+ username, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(getApplicationContext(), "no username found!", Toast.LENGTH_SHORT).show();
+                            Email.setText("no username found");
+                        }
+                    });
+                    String username = user.getDisplayName();
                     updateUI(user);
                     Toast.makeText(getApplicationContext(), "Authentication succeeded.", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(MainActivity.this, Slidermenu.class);
@@ -91,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                 else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(getApplicationContext(), "Authentication failed.", Toast.LENGTH_SHORT).show();
-                    Password.setText("Incorrect Password");
+                    //Password.setText("Incorrect Password");
                 }
             }
         });

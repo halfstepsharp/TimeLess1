@@ -10,4 +10,85 @@
     <string name="nav_header_subtitle">Buy and Sell watches easily</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+    <string-array name="watchbrands">
+        <item>Casio</item> <!--1 -->
+        <item>Omega</item>
+        <item>Rolex</item>
+        <item>Seiko</item>
+        <item>TAG Heuer</item>
+        <item>Tissot</item>
+        <item>Audemars Piguet</item>
+        <item>Patek Philippe</item>
+        <item>Vacheron Constantin</item> <!--9 -->
+        <item>Cartier</item>
+        <item>Breitling</item>
+        <item>Jaeger-LeCoultre</item>
+        <item>IWC</item>
+        <item>Hublot</item>
+        <item>Panerai</item>
+        <item>A. Lange &amp; Söhne</item>
+        <item>Chopard</item>
+        <item>Breguet</item>
+        <item>Girard-Perregaux</item>
+        <item>Richard Mille</item>
+        <item>Tudor</item>
+        <item>Ulysse Nardin</item>
+        <item>Harry Winston</item>
+        <item>Blancpain</item>
+        <item>Glashütte Original</item>
+        <item>Montblanc</item>
+        <item>Bulgari</item>
+        <item>Zenith</item>
+        <item>De Bethune</item>
+        <item>Bvlgari</item>
+        <item>Graff</item>
+        <item>Boucheron</item>
+        <item>Cartier</item>
+        <item>Piaget</item>
+        <item>Frank Muller</item>
+        <item>Louis Vuitton</item>
+        <item>H. Moser &amp; Cie</item>
+        <item>A. Favre &amp; Fils</item>
+        <item>Roger Dubuis</item>
+        <item>Hautlence</item>
+        <item>Cvstos</item>
+        <item>Urwerk</item>
+        <item>HYT</item>
+        <item>Armin Strom</item>
+        <item>De Grisogono</item>
+        <item>Moritz Grossmann</item>
+        <item>Alpina</item>
+        <item>Bell &amp; Ross</item>
+        <item>Frederique Constant</item>
+        <item>Mido</item>
+        <item>Tissot</item>
+        <item>Longines</item>
+        <item>Rado</item>
+        <item>Chopard</item>
+        <item>Gucci</item>
+        <item>Baume &amp; Mercier</item>
+        <item>Hermes</item>
+        <item>Montres Journe</item>
+        <item>MB&amp;F</item>
+        <item>Hublot</item>
+        <item>Konstantin Chaykin</item>
+        <item>Cuervo y Sobrinos</item>
+        <item>Cartier</item>
+        <item>Nomos Glashütte</item>
+        <item>Hamilton</item>
+        <item>Fendi</item>
+        <item>Roger W. Smith</item>
+        <item>Bremont</item>
+        <item>Junghans</item>
+        <item>Oris</item>
+        <item>Gerald Genta</item>
+        <item>Seiko</item>
+        <item>Purnell</item>
+        <item>Ressence</item>
+        <item>Carl F. Bucherer</item>
+        <item>Urban Jürgensen</item>
+        <item>Christophe Claret</item>
+        <item>Parmigiani Fleurier</item>
+        <item>Marc &amp; Sons</item>
+    </string-array>
 </resources>
