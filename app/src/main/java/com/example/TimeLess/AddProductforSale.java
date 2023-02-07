@@ -12,9 +12,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.util.Base64;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -41,6 +43,8 @@ import java.util.Map;
 
 public class AddProductforSale extends AppCompatActivity {
 
+    public static final Integer RecordAudioRequestCode = 1;
+
     private EditText name, price, long_description;
     private AutoCompleteTextView brandtext;
     private ImageView photo_taken, micButton;
@@ -52,6 +56,7 @@ public class AddProductforSale extends AppCompatActivity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     public static final int GALLERY = 0;
     private SpeechRecognizer speechRecognizer;
+    //private SpeechRecognizer speechRecognizer;
 
 
     @Override
@@ -77,7 +82,76 @@ public class AddProductforSale extends AppCompatActivity {
         brandtext = (AutoCompleteTextView) findViewById(R.id.brandinput);
         long_description = (EditText) findViewById(R.id.longdes_entry);
 
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+
+        final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
+
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override
+            public void onReadyForSpeech(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onBeginningOfSpeech() {
+                long_description.setText("");
+                long_description.setHint("Listening...");
+            }
+
+            @Override
+            public void onRmsChanged(float v) {
+
+            }
+
+            @Override
+            public void onBufferReceived(byte[] bytes) {
+
+            }
+
+            @Override
+            public void onEndOfSpeech() {
+
+            }
+
+            @Override
+            public void onError(int i) {
+
+            }
+
+            @Override
+            public void onResults(Bundle bundle) {
+                micButton.setImageResource(R.drawable.ic_mic);
+                ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                long_description.setText(data.get(0));
+            }
+
+            @Override
+            public void onPartialResults(Bundle bundle) {
+
+            }
+
+            @Override
+            public void onEvent(int i, Bundle bundle) {
+
+            }
+        });
+
         micButton = (ImageView) findViewById(R.id.STTbutton);
+        micButton.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                    speechRecognizer.stopListening();
+                }
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    micButton.setImageResource(R.drawable.ic_mic);
+                    speechRecognizer.startListening(speechRecognizerIntent);
+                }
+                return false;
+            }
+        });
 
         RL = (Button) findViewById(R.id.RotateL);
         RL.setVisibility(View.INVISIBLE);
@@ -95,10 +169,7 @@ public class AddProductforSale extends AppCompatActivity {
             }
         });
 
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        
+
         String[] brands = getResources().getStringArray(R.array.watchbrands);
         ArrayAdapter brandAdapter = new ArrayAdapter(getApplicationContext(), R.layout.dropdown_item, brands);
         brandtext.setAdapter(brandAdapter);
@@ -112,17 +183,6 @@ public class AddProductforSale extends AppCompatActivity {
         }
     }
 
-    @Override
-    public void onResults(Bundle bundle) {
-        micButton.setImageResource(R.drawable.ic_mic);
-        ArrayList<String> data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
-        long_description.setText(data.get(0));
-    }
-
-    @Override
-    public void onBeginningOfSpeech() {
-        long_description.setText("Listening...");
-    }
 
     private void dispatchTakePictureIntent() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
