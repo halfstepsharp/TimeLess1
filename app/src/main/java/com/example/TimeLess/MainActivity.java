@@ -2,10 +2,13 @@ package com.example.TimeLess;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Patterns;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -43,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
         login_button = (Button) findViewById(R.id.loginbutton);
 
         mAuth = FirebaseAuth.getInstance();
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.purpledark));
+        }
 
         //Check if login credentials match or not
         login_button.setOnClickListener(new View.OnClickListener() {
@@ -119,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
                                 // Do something with the username
                                 SharedPreferences prefs = getSharedPreferences("TimeLess", MODE_PRIVATE);
                                 prefs.edit().putString("username", username).commit();
-                                Toast.makeText(getApplicationContext(), "username: "+ username, Toast.LENGTH_SHORT).show();
                             }
                         }
 

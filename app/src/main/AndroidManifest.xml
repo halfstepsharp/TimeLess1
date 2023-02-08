@@ -31,7 +31,6 @@
                 android:value="" />
         </activity>
         <activity android:name=".add_credit_card" />
-        <activity android:name=".paymentScreen" />
         <activity android:name=".CreateUser" />
         <activity android:name=".AccountSettings" />
         <activity android:name=".Cart" />
@@ -43,7 +42,7 @@
             android:name=".Slidermenu"
             android:label="@string/title_activity_slidermenu"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SecondActivity" />
+        <activity android:name=".PayScreen" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

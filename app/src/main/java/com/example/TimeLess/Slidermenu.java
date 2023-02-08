@@ -128,7 +128,7 @@ public class Slidermenu extends AppCompatActivity
 
     }
 
-    private void setSupportActionBar(Toolbar toolbar) {
+    public void setSupportActionBar(Toolbar toolbar) {
 
     }
 
@@ -166,7 +166,6 @@ public class Slidermenu extends AppCompatActivity
 
         if (id == R.id.Cart) {
             //Load Cart page
-
             Intent intent = new Intent(getApplicationContext(), Cart.class);
             startActivity(intent);
 
@@ -174,10 +173,9 @@ public class Slidermenu extends AppCompatActivity
             Intent intent = new Intent(getApplicationContext(), AccountSettings.class);
             startActivity(intent);
 
-        } else if (id == R.id.Finances) {
 
         } else if (id == R.id.Marketplace) {
-            startActivity(new Intent(getApplicationContext(), AddProductforSale.class));
+            startActivity(new Intent(getApplicationContext(), Slidermenu.class));
 
         } else if (id == R.id.MySale) {
             //Connect with server and get all items currently on sale sold by me
@@ -224,7 +222,6 @@ public class Slidermenu extends AppCompatActivity
     }
 
     public void update_recycler_view(Map<String, Object> data) {
-
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             Map singleProduct = (Map) entry.getValue();
             this.products_in_sale.add(new Product(

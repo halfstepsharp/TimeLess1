@@ -6,12 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".Cart">
 
-    <include
-        android:id="@+id/include3"
-        layout="@layout/toolbar_with_slidermenu"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="232dp" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView_cart"
         android:layout_width="match_parent"
@@ -29,7 +23,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="#F17E03"
@@ -37,9 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.765"
-        app:layout_constraintStart_toStartOf="@+id/recyclerView_cart"
-        app:layout_constraintTop_toTopOf="@+id/include3"
-        app:layout_constraintVertical_bias="0.988" />
+        app:layout_constraintStart_toStartOf="@+id/recyclerView_cart" />
 
     <TextView
         android:id="@+id/cart_gt_entry"

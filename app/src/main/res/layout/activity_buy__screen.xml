@@ -6,126 +6,97 @@
     android:layout_height="match_parent"
     tools:context=".Buy_Screen">
 
-    <include
-        android:id="@+id/include6"
-        layout="@layout/toolbar_with_slidermenu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
     <GridLayout
         android:id="@+id/gridLayout"
         android:layout_width="394dp"
         android:layout_height="602dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@color/buypage"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/include6"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/item_buy_button_cart"
             android:layout_width="177dp"
             android:layout_height="wrap_content"
-            android:text="Buy"
+            android:layout_row="5"
             android:layout_column="1"
-            android:layout_row="5" />
+            android:text="Buy" />
 
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="0"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="Buy Screen"
-            android:layout_column="0"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.252"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.045"
-            android:layout_row="1" />
+            app:layout_constraintVertical_bias="0.045" />
 
         <ImageView
             android:id="@+id/activity_buy_image"
             android:layout_width="206dp"
             android:layout_height="203dp"
-            android:layout_column="0"
             android:layout_row="2"
+            android:layout_column="0"
             app:srcCompat="@drawable/logo" />
 
         <Button
             android:id="@+id/add_to_cart_button"
             android:layout_width="177dp"
             android:layout_height="wrap_content"
-            android:text="Add to Cart"
+            android:layout_row="5"
             android:layout_column="0"
-            android:layout_row="5" />
-
-        <TextView
-            android:id="@+id/quantity_of_item"
-            android:layout_width="160dp"
-            android:layout_height="wrap_content"
-            android:text="Enter Quantity"
-            android:layout_column="0"
-            android:layout_row="3" />
-
-        <EditText
-            android:id="@+id/number_to_buy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="1"
-            android:inputType="numberSigned"
-            android:layout_column="1"
-            android:layout_row="3" />
+            android:text="Add to Cart" />
 
         <TextView
             android:id="@+id/textView4"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total Price"
+            android:layout_row="3"
             android:layout_column="0"
-            android:layout_row="4" />
+            android:text="Total Price" />
 
         <TextView
             android:id="@+id/price_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="$59"
+            android:layout_row="3"
             android:layout_column="1"
-            android:layout_row="4" />
+            android:text="$59" />
 
         <TextView
             android:id="@+id/Success_banner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_column="1"
-            android:layout_row="0" />
+            android:layout_row="0"
+            android:layout_column="1" />
 
         <LinearLayout
             android:layout_width="189dp"
             android:layout_height="191dp"
-            android:orientation="vertical"
+            android:layout_row="2"
             android:layout_column="1"
-            android:layout_row="2">
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/short_description_cart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="short description"
+                android:layout_row="2"
                 android:layout_column="1"
-                android:layout_row="2" />
+                android:text="short description"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/long_description_cart"

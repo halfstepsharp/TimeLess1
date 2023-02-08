@@ -1,78 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MotionScene 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Transition
-        motion:constraintSetEnd="@+id/end"
-        motion:constraintSetStart="@id/start"
-        motion:autoTransition="animateToEnd"
-        motion:duration="1500">
+        app:constraintSetEnd="@+id/end"
+        app:constraintSetStart="@id/start"
+        app:autoTransition="animateToEnd"
+        app:duration="1500">
        <KeyFrameSet>
        </KeyFrameSet>
-        <OnSwipe motion:maxAcceleration="0.1"
-            motion:springDamping="8.108"
-            motion:springMass="1.9"
-            motion:springStiffness="241.3"
-            motion:springStopThreshold="0.54"
-            motion:maxVelocity="0.31" />
+        <OnSwipe app:maxAcceleration="0.1"
+            app:springDamping="8.108"
+            app:springMass="1.9"
+            app:springStiffness="241.3"
+            app:springStopThreshold="0.54"
+            app:maxVelocity="0.31" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            motion:layout_constraintVertical_bias="1"
+            app:layout_constraintVertical_bias="1"
             android:layout_height="0dp"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
-            motion:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
             android:id="@+id/bottomhalflayout" />
         <Constraint
             android:id="@+id/imageView3"
-            motion:layout_constraintEnd_toEndOf="@id/bannerlayout"
+            app:layout_constraintEnd_toEndOf="@id/bannerlayout"
             android:layout_width="300dp"
             android:layout_height="100dp"
-            motion:layout_constraintBottom_toBottomOf="@id/bannerlayout"
-            motion:layout_constraintTop_toTopOf="@id/bannerlayout"
-            motion:layout_constraintStart_toStartOf="@id/bannerlayout"
+            app:layout_constraintBottom_toBottomOf="@id/bannerlayout"
+            app:layout_constraintTop_toTopOf="@id/bannerlayout"
+            app:layout_constraintStart_toStartOf="@id/bannerlayout"
             android:alpha="0" />
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
             android:id="@+id/imageView3"
-            motion:layout_constraintEnd_toEndOf="@id/bannerlayout"
+            app:layout_constraintEnd_toEndOf="@id/bannerlayout"
             android:layout_width="363dp"
             android:layout_height="254dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="@id/bannerlayout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/bannerlayout"
             android:scaleX="20"
             android:scaleY="20"
-            motion:layout_constraintBottom_toTopOf="@+id/bottomhalflayout"
-            motion:layout_editor_absoluteY="85dp"
-            motion:transitionEasing="cubic(0.2,0,0.6,1)" />
+            app:layout_constraintBottom_toTopOf="@+id/bottomhalflayout"
+            app:layout_editor_absoluteY="85dp"
+            app:transitionEasing="cubic(0.2,0,0.6,1)" />
         <Constraint
             android:id="@+id/imageView3"
             android:scaleX="2"
-            motion:layout_constraintEnd_toEndOf="@id/bannerlayout"
+            app:layout_constraintEnd_toEndOf="@id/bannerlayout"
             android:layout_width="363dp"
             android:layout_height="254dp"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="@id/bannerlayout"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="@id/bannerlayout"
             android:scaleY="2"
-            motion:layout_constraintBottom_toTopOf="@+id/bottomhalflayout"
-            motion:layout_editor_absoluteY="85dp" />
+            app:layout_constraintBottom_toTopOf="@+id/bottomhalflayout"
+            app:layout_editor_absoluteY="85dp" />
         <Constraint
             android:id="@+id/bottomhalflayout"
-            motion:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintVertical_bias="1"
-            motion:layout_constraintHeight_percent=".6"
-            motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintStart_toStartOf="parent"
-            motion:transitionEasing="cubic(0.2,0,0.59,1)" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintVertical_bias="1"
+            app:layout_constraintHeight_percent=".6"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:transitionEasing="cubic(0.2,0,0.59,1)" />
     </ConstraintSet>
 </MotionScene>

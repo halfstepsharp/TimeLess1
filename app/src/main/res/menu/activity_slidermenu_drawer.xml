@@ -6,33 +6,24 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/Marketplace"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_mall"
             android:title="Marketplace" />
         <item
             android:id="@+id/SellItems"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Sell Items" />
+            android:icon="@drawable/ic_add_black_24dp"
+            android:title="Add New Listing" />
         <item
             android:id="@+id/MySale"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="My items on sale" />
+            android:icon="@drawable/ic_person"
+            android:title="My Listings" />
         <item
             android:id="@+id/Cart"
-            android:icon="@drawable/ic_menu_manage"
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
             android:title="Cart" />
+        <item
+            android:id="@+id/AccountSettings"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Account Settings" />
     </group>
-
-    <item android:title="Account">
-        <menu>
-            <item
-                android:id="@+id/AccountSettings"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Account Settings" />
-            <item
-                android:id="@+id/Finances"
-                android:icon="@drawable/ic_menu_send"
-                android:title="My Finances" />
-        </menu>
-    </item>
 
 </menu>

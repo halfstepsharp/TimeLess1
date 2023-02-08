@@ -1,12 +1,13 @@
 package com.example.TimeLess;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.Manifest;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -25,6 +26,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,7 +45,10 @@ import java.util.Map;
 
 public class AddProductforSale extends AppCompatActivity {
 
-    public static final Integer RecordAudioRequestCode = 1;
+    public static final Integer RecordAudioRequestCode = 0;
+    private static final int CAMERA_PERMISSION_REQUEST_CODE = 1;
+    static final int REQUEST_IMAGE_CAPTURE = 2;
+    public static final int GALLERY = 3;
 
     private EditText name, price, long_description;
     private AutoCompleteTextView brandtext;
@@ -53,8 +58,6 @@ public class AddProductforSale extends AppCompatActivity {
 
     private String username = "";
     private String file_in_string;
-    static final int REQUEST_IMAGE_CAPTURE = 1;
-    public static final int GALLERY = 0;
     private SpeechRecognizer speechRecognizer;
     //private SpeechRecognizer speechRecognizer;
 
@@ -63,19 +66,23 @@ public class AddProductforSale extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_productfor_sale);
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED){
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
             checkPermission();
         }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+        }
+
         /*Bundle extras = getIntent().getExtras();
         if(extras!=null){
             this.username = extras.getString("username");
         }*/
-        
+
 
         SharedPreferences prefs = getSharedPreferences("TimeLess", MODE_PRIVATE);
         username = prefs.getString("username", "UNKNOWN");
         //for testing
-        Toast.makeText(this, "username:" + username, Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "username:" + username, Toast.LENGTH_LONG).show();
 
         name = (EditText) findViewById(R.id.name_of_product_entry);
         price = (EditText) findViewById(R.id.price_entry);
@@ -85,7 +92,7 @@ public class AddProductforSale extends AppCompatActivity {
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
 
         final Intent speechRecognizerIntent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         speechRecognizerIntent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
 
         speechRecognizer.setRecognitionListener(new RecognitionListener() {
@@ -142,10 +149,10 @@ public class AddProductforSale extends AppCompatActivity {
         micButton.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                     speechRecognizer.stopListening();
                 }
-                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                     micButton.setImageResource(R.drawable.ic_mic);
                     speechRecognizer.startListening(speechRecognizerIntent);
                 }
@@ -179,7 +186,7 @@ public class AddProductforSale extends AppCompatActivity {
 
     private void checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.RECORD_AUDIO},RecordAudioRequestCode);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.RECORD_AUDIO}, RecordAudioRequestCode);
         }
     }
 
@@ -187,11 +194,11 @@ public class AddProductforSale extends AppCompatActivity {
     private void dispatchTakePictureIntent() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                 android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+        /*
         if (galleryIntent.resolveActivity(getPackageManager()) != null) {
             startActivityForResult(galleryIntent, GALLERY);
-        }
-        /*AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
+        }*/
+        AlertDialog.Builder pictureDialog = new AlertDialog.Builder(this);
         pictureDialog.setTitle("Select Action");
         String[] pictureDialogItems = {
                 "Capture photo from camera",
@@ -203,9 +210,10 @@ public class AddProductforSale extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         if(which==0){
                             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                            /*if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-                            }
+                            }*/
+                            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                         }
                         else if(which ==1){
                             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
@@ -219,7 +227,7 @@ public class AddProductforSale extends AppCompatActivity {
                         }
                     }
                 });
-        pictureDialog.show();*/
+        pictureDialog.show();
     }
 
     public void takepicture(View view) {
@@ -232,10 +240,11 @@ public class AddProductforSale extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            this.file_in_string = BitMapToString(imageBitmap);
-            photo_taken.setImageBitmap(imageBitmap);
-            photo_taken.setScaleX((float) 1.5);
+            Bitmap imgBitMap = (Bitmap)data.getExtras().get("data");
+            this.file_in_string = BitMapToString(imgBitMap);
+            photo_taken.setImageBitmap(imgBitMap);
+            //photo_taken.setScaleX((float) 1.5);
+            Toast.makeText(AddProductforSale.this, "Image saved!", Toast.LENGTH_SHORT).show();
         } else if (requestCode == GALLERY && resultCode == RESULT_OK) {
             Uri contentURI = data.getData();
             try {
@@ -313,35 +322,70 @@ public class AddProductforSale extends AppCompatActivity {
         String price_of_item = price.getText().toString();
         String short_description_of_iem = brandtext.getText().toString();
         String long_description_of_iem = long_description.getText().toString();
+        if (validatenewlistinginput(title_of_item, price_of_item, short_description_of_iem, long_description_of_iem) == true) {
+            Product product = new Product(this.username, title_of_item, price_of_item, short_description_of_iem, long_description_of_iem, this.file_in_string);
+            DatabaseReference product_database = database.getReference("products");
 
-        Product product = new Product(this.username, title_of_item, price_of_item, short_description_of_iem, long_description_of_iem, this.file_in_string);
-        DatabaseReference product_database = database.getReference("products");
+            //Creating a key by the database should use persons key instead
+            String userid = product_database.push().getKey();
+            product.setUser_id(userid);
 
-        //Creating a key by the database should use persons key instead
-        String userid = product_database.push().getKey();
-        product.setUser_id(userid);
+            //Set one copy of item in products database
+            Map<String, Object> database_entry = new HashMap<String, Object>();
+            database_entry.put("username", username);
+            database_entry.put("id", userid);
+            database_entry.put("title", title_of_item);
+            database_entry.put("price", price_of_item);
+            database_entry.put("short", short_description_of_iem);
+            database_entry.put("long", long_description_of_iem);
+            database_entry.put("image", this.file_in_string);
+            product_database.child(userid).setValue(database_entry);
 
-        //Set one copy of item in products database
-        Map<String, Object> database_entry = new HashMap<String, Object>();
-        database_entry.put("username", username);
-        database_entry.put("id", userid);
-        database_entry.put("title", title_of_item);
-        database_entry.put("price", price_of_item);
-        database_entry.put("short", short_description_of_iem);
-        database_entry.put("long", long_description_of_iem);
-        database_entry.put("image", this.file_in_string);
-        product_database.child(userid).setValue(database_entry);
+            //Set the id of product in user's database too
+            FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
+            String user_id = current_user.getUid();
 
-        //Set the id of product in user's database too
-        FirebaseUser current_user = FirebaseAuth.getInstance().getCurrentUser();
-        String user_id = current_user.getUid();
+            DatabaseReference user_database = database.getReference("users").child(user_id).child("myproducts");
+            user_database.child(userid).setValue(database_entry);
 
-        DatabaseReference user_database = database.getReference("users").child(user_id).child("myproducts");
-        user_database.child(userid).setValue(database_entry);
+            //product_database.child(userid).setValue(product);
+            Intent intent = new Intent(view.getContext(), Slidermenu.class);
+            view.getContext().startActivity(intent);
+        }
+    }
 
-        //product_database.child(userid).setValue(product);
-        Intent intent = new Intent(view.getContext(), Slidermenu.class);
-        view.getContext().startActivity(intent);
+    private boolean validatenewlistinginput(String title, String priceval, String shortdesc, String longdesc) {
+        int count = 0;
+        if (title.length() < 5 || title.isEmpty()) {
+            name.setError("Product title has to be at least 6 characters long!");
+        } else {
+            count += 1;
+        }
+        if (priceval.isEmpty()) {
+            price.setError("price cannot be empty!");
+        } else {
+            Float pricevalue = Float.parseFloat(priceval);
+            if (pricevalue < 0){
+                price.setError("price has to be positive");
+            } else {
+                count += 1;
+            }
+        }
+        if (shortdesc.length() < 2 || shortdesc.isEmpty()) {
+            brandtext.setError("Brand has to be at least 3 characters long!");
+        } else {
+            count += 1;
+        }
+        if (longdesc.length() < 9 || longdesc.isEmpty()) {
+            long_description.setError("description has to be at least 10 characters long!");
+        } else {
+            count += 1;
+        }
+        if (count == 4) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {

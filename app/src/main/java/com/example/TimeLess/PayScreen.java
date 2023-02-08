@@ -26,7 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class SecondActivity extends AppCompatActivity {
+public class PayScreen extends AppCompatActivity {
     private TextView price_dislpay, info_card ;
     private Button buy_button, new_payment_method;
     private EditText address_field;
@@ -37,7 +37,7 @@ public class SecondActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_pay);
         address_field = (EditText) findViewById(R.id.address_field);
         price_dislpay = (TextView) findViewById(R.id.credit_card_price);
         cards = (RecyclerView) findViewById(R.id.stored_credit_card);

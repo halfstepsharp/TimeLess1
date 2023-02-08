@@ -13,7 +13,7 @@
         android:id="@+id/imageView3"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:background="@drawable/round_corner_pink"
+        android:background="@color/purpledark"
         app:layout_constraintBottom_toBottomOf="@id/bannerlayout"
         app:layout_constraintEnd_toEndOf="@id/bannerlayout"
         app:layout_constraintStart_toStartOf="@id/bannerlayout"
@@ -34,7 +34,7 @@
             android:layout_marginStart="10dp"
             android:text="Welcome to \nTimeLess"
             android:textAlignment="textStart"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,7 +49,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_wristwatch" />
+            app:srcCompat="@drawable/ic_wristwatchwhite" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -60,9 +60,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent=".6"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1">
+        app:layout_constraintVertical_bias="1.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="wrap_content"

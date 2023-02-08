@@ -58,7 +58,7 @@ public class Cart extends AppCompatActivity {
         buy_all.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SecondActivity.class);
+                Intent intent = new Intent(v.getContext(), PayScreen.class);
                 intent.putExtra("total",grand_ttl);
                 v.getContext().startActivity(intent);           //Go to the payment screen
             }
@@ -69,7 +69,7 @@ public class Cart extends AppCompatActivity {
             this.product =  ProductsDatabase.Get_product_with_key(id_number);
 
             if(product==null){
-                Toast toast = Toast.makeText(getApplicationContext(),"Null",Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(getApplicationContext(),"No items",Toast.LENGTH_LONG);
                 toast.show();
             }
         }
